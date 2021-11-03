@@ -53,7 +53,7 @@ IS_TARBALL=""
 IS_PACKAGE=""
 OUTPUT_DIR="/var/tmp"
 NODE_ADDR=""
-CONN_ADDR=""
+CONN_ADDR=127.0.0.1
 CONN_PORT=9042
 ROOT_DIR=""
 DATA_DIR=""
@@ -153,7 +153,9 @@ function debug {
 }
 
 function get_node_ip {
-    CONN_ADDR="$(grep -E '^(native_transport_broadcast_address|broadcast_rpc_address): ' "$CONF_DIR/cassandra.yaml" |sed -e 's|^[^:]*:[ ]*\([^ ]*\)[ ]*$|\1|'|head -n 1|tr -d "'")"
+    if [ -z "$CONN_ADDR" ]; then
+	CONN_ADDR="$(grep -E '^(native_transport_broadcast_address|broadcast_rpc_address): ' "$CONF_DIR/cassandra.yaml" |sed -e 's|^[^:]*:[ ]*\([^ ]*\)[ ]*$|\1|'|head -n 1|tr -d "'")"
+    fi
     if [ -z "$CONN_ADDR" ]; then
         CONN_ADDR="$(grep -E '^(native_transport_address|rpc_address): ' "$CONF_DIR/cassandra.yaml" |sed -e 's|^[^:]*:[ ]*\([^ ]*\)[ ]*$|\1|'|head -n 1|tr -d "'")"
     fi
